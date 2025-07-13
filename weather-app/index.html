@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+      background: linear-gradient(to right, #f0f0f0, #dff9fb);
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+    #weatherResult {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f8f8f8;
+      display: inline-block;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌦️ Weather App</h1>
+  <input type="text" id="cityInput" placeholder="Enter city name">
+  <button onclick="getWeather()">Get Weather</button>
+
+  <div id="weatherResult"></div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById('cityInput').value;
+      const apiKey = '3e3302dce11f86acd827312c8b95134a'; // Your working API key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('⚠️ Unable to fetch weather data. Try another city.');
+        }
+
+        const data = await response.json();
+        const result = `
+          <h2>📍 ${data.name}, ${data.sys.country}</h2>
+          <p><strong>🌡️ Temperature:</strong> ${data.main.temp} °C</p>
+          <p><strong>🌥️ Condition:</strong> ${data.weather[0].main}</p>
+          <p><strong>💧 Humidity:</strong> ${data.main.humidity}%</p>
+          <p><strong>🌬️ Wind Speed:</strong> ${data.wind.speed} km/h</p>
+        `;
+        document.getElementById('weatherResult').innerHTML = result;
+      } catch (error) {
+        document.getElementById('weatherResult').innerHTML = `<p style="color:red;">${error.message}</p>`;
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
